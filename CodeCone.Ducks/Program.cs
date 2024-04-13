@@ -1,4 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using CodeCone.Ducks.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<CodeConeDucksContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CodeConeDucksContext") ?? throw new InvalidOperationException("Connection string 'CodeConeDucksContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
