@@ -153,5 +153,15 @@ namespace CodeCone.Ducks.Controllers
         {
             return _context.Ticket.Any(e => e.TicketId == id);
         }
+        public async Task<IActionResult> Accept(int id)
+        {
+            var ticket = await _context.Ticket.FindAsync(id);
+            if (ticket != null)
+            {
+                _context.Ticket.Remove(ticket);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
