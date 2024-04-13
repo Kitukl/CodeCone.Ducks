@@ -11,9 +11,9 @@ namespace CodeCone.Ducks.Models
         public string Name { get; set; }
 
         [Required]
-        public string Surname {  get; set; }
+        public string Surname { get; set; }
 
-        [Required]  
+        [Required]
         public string UserName { get; set; }
 
         [Required]
@@ -24,6 +24,8 @@ namespace CodeCone.Ducks.Models
 
         public string Password { get; set; }
 
+        [Required]
 
+        public bool isVolontier { get; set; }
     }
 }

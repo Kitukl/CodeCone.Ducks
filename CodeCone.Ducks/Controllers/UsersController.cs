@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -50,11 +49,9 @@ namespace CodeCone.Ducks.Controllers
         }
 
         // POST: Users/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,UserName,Age,Password")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Name,Surname,UserName,Age,Password,IsVolunteer")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -83,11 +80,9 @@ namespace CodeCone.Ducks.Controllers
         }
 
         // POST: Users/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Surname,UserName,Age,Password")] User user)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Surname,UserName,Age,Password,IsVolunteer")] User user)
         {
             if (id != user.Id)
             {
