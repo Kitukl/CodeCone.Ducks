@@ -20,14 +20,14 @@ namespace CodeCone.Ducks.Controllers
         }
         // GET: Ticket
 
-        [HttpGet()]
+        [HttpGet("Index/{id:int}")]
         public async Task<IActionResult> Index()
         {
             var tickets = await _context.Tickets.ToListAsync();
             return View(tickets);
         }
 
-        [HttpGet("Details/{id:guid}")]
+        [HttpGet("Details/{id:int}")]
         // GET: Ticket/Details/5
         public async Task<IActionResult> Details(int id)
         {
@@ -42,28 +42,18 @@ namespace CodeCone.Ducks.Controllers
             return Json(ticket);
         }
 
-        // GET: Ticket/Create
-        public IActionResult Create()
-        {
-            return Json(null);
-        }
-
         // POST: Ticket/Create
-        [HttpPost(Name = "Create")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TicketId,Title,Description,CreatedAt,UserId")] Ticket ticket)
+        [HttpPost("Create")]
+        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([FromBody] Ticket ticket)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(ticket);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            _context.Add(ticket);
+            await _context.SaveChangesAsync();
             return Json(ticket);
         }
 
         // GET: Ticket/Edit/5
-        [HttpGet("Edit/{id:guid}")]
+        [HttpPut("Edit/{id:guid}")]
         public async Task<IActionResult> Edit(int id)
         {
 
@@ -77,8 +67,7 @@ namespace CodeCone.Ducks.Controllers
 
         // POST: Ticket/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TicketId,Title,Description,Submitter,CreatedAt")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [FromBody] Ticket ticket)
         {
             if (id != ticket.Id)
             {
@@ -124,8 +113,7 @@ namespace CodeCone.Ducks.Controllers
         }
 
         // POST: Ticket/Delete/5
-        [HttpDelete, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        [HttpDelete("Delete")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var ticket = await _context.Tickets.FindAsync(id);

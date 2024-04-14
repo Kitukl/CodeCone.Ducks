@@ -20,5 +20,14 @@ namespace CodeCone.Ducks.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
             optionsBuilder.UseSqlServer("Server=localhost;Initial Catalog=CodeConeDucks;Integrated Security=True;Multiple Active Result Sets=True;Trust Server Certificate=True;Command Timeout=300");
         public DbSet<CodeCone.Ducks.Models.Jar> Jar { get; set; } = default!;
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<User>()
+        //        .HasIndex(u => u.UserName)
+        //        .IsUnique();
+            
+        //    base.OnModelCreating(modelBuilder);
+        //}
     }
 }

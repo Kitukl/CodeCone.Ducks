@@ -1,8 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CodeCone.Ducks.Data;
 using CodeCone.Ducks.Models;
@@ -29,59 +25,29 @@ namespace CodeCone.Ducks.Controllers
         public async Task<IActionResult> Details(Guid id)
         {
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            
             if (user == null)
             {
                 return NotFound();
             }
 
             return Json(user);
-        }
-
-        // GET: Users/Create
-        public IActionResult Create()
-        {
-            return View();
         }
 
         // POST: Users/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Surname,UserName,Age,Password,IsVolunteer")] User user)
+        [HttpPost ("Create")]
+        public async Task<IActionResult> Create([FromBody] User user)
         {
-            if (ModelState.IsValid)
-            {
-                user.Id = Guid.NewGuid();
-                _context.Add(user);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return Json(user);
-        }
-
-        // GET: Users/Edit/5
-        [HttpGet("Edit/{id:guid}")]
-        public async Task<IActionResult> Edit(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+            user.Id = Guid.NewGuid();
+            _context.Add(user);
+            await _context.SaveChangesAsync();
             return Json(user);
         }
 
         // POST: Users/Edit/5
-        [HttpGet("Edit/{id:guid}")]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Surname,UserName,Age,Password,IsVolunteer")] User user)
+        [HttpPost("Edit/{id:guid}")]
+        public async Task<IActionResult> Edit(Guid id, [FromBody] User user)
         {
             if (id != user.Id)
             {
@@ -111,28 +77,8 @@ namespace CodeCone.Ducks.Controllers
             return Json(user);
         }
 
-        // GET: Users/Delete/5
-
-        [HttpGet("Delete/{id:guid}")]
-        public async Task<IActionResult> Delete(Guid? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return Json(user);
-        }
-
-        // POST: Users/Delete/5
-        [HttpGet("Delete/{id:guid}")]
+        // DELETE: Users/Delete/5
+        [HttpDelete("Delete/{id:guid}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
