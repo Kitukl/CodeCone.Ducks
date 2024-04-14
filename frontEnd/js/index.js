@@ -1,38 +1,39 @@
-const hostname = 'http://localhost:5000'
-const nameInput = $('#name')
-const surnameInput = $('#surname')
-const ageInput = $('#age')
-const messageInput = $('#message')
+const hostname = "http://localhost:5000";
+const nameInput = $("#name");
+const surnameInput = $("#surname");
+const ageInput = $("#age");
+const messageInput = $("#message");
+const usernameInput = $("#username");
 
 function submitForm(event) {
-    event.preventDefault();
+  const name = nameInput.val();
+  const surname = surnameInput.val();
+  const age = ageInput.val();
+  const message = messageInput.val();
+  const user = JSON.parse(localStorage.getItem("user"));
 
-    const name = nameInput.val()
-    const surname = surnameInput.val()
-    const age = ageInput.val()
-    const message = messageInput.val()
+  $.ajax(hostname + "/Tickets/Create", {
+    method: "POST",
+    dataType: "json",
+    processData: false,
+    contentType: "application/json",
+    data: JSON.stringify({
+      description: message,
+      title: "title",
+      createdAt: new Date(),
+      ticketId: 0,
+      userId: user.id,
+    }),
+    error: (err) => {
+      console.error(err);
+    },
+    success: (response) => {
+      console.log(response);
 
-    $.ajax(hostname + '/Tickets/Test', {
-        method: 'POST',
-        dataType: 'json',
-        data: {
-            'submitter': name + surname,
-            'description': message
-        },
-        error: (err) => {
-            console.error(err);
-            console.log(err.getAllResponseHeaders())
-        },
-        success: (response) => {
-            console.log(response)
-
-            nameInput.val('')
-            surnameInput.val('')
-            ageInput.val('')
-            messageInput.val('')
-        }
-    });
-
-    
-    
+      nameInput.val("");
+      surnameInput.val("");
+      ageInput.val("");
+      messageInput.val("");
+    },
+  });
 }
