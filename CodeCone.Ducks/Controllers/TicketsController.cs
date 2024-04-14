@@ -20,11 +20,11 @@ namespace CodeCone.Ducks.Controllers
         }
         // GET: Ticket
 
-        [HttpGet("Index/{id:int}")]
+        [HttpGet()]
         public async Task<IActionResult> Index()
         {
             var tickets = await _context.Tickets.ToListAsync();
-            return View(tickets);
+            return Json(tickets);
         }
 
         [HttpGet("Details/{id:int}")]
