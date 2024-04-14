@@ -10,6 +10,7 @@ using CodeCone.Ducks.Models;
 
 namespace CodeCone.Ducks.Controllers
 {
+    [Route ("Jars")]
     public class JarsController : Controller
     {
         private readonly CodeConeDucksContext _context;
@@ -22,10 +23,11 @@ namespace CodeCone.Ducks.Controllers
         // GET: Jars
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Jar.ToListAsync());
+            return Json(await _context.Jar.ToListAsync());
         }
 
         // GET: Jars/Details/5
+        [HttpGet("Details/{id:guid}")]
         public async Task<IActionResult> Details(Guid? id)
         {
             if (id == null)
@@ -40,7 +42,7 @@ namespace CodeCone.Ducks.Controllers
                 return NotFound();
             }
 
-            return View(jar);
+            return Json(jar);
         }
 
         // GET: Jars/Create
@@ -63,10 +65,11 @@ namespace CodeCone.Ducks.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(jar);
+            return Json(jar);
         }
 
         // GET: Jars/Edit/5
+        [HttpGet("Edit/{id:guid}")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -79,13 +82,14 @@ namespace CodeCone.Ducks.Controllers
             {
                 return NotFound();
             }
-            return View(jar);
+            return Json(jar);
         }
 
         // POST: Jars/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [HttpGet("Edit/{id:guid}")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Description,Link,ZvitLink")] Jar jar)
         {
@@ -114,10 +118,11 @@ namespace CodeCone.Ducks.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(jar);
+            return Json(jar);
         }
 
         // GET: Jars/Delete/5
+        [HttpDelete("Delete/{id:guid}")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -132,7 +137,7 @@ namespace CodeCone.Ducks.Controllers
                 return NotFound();
             }
 
-            return View(jar);
+            return Json(jar);
         }
 
         // POST: Jars/Delete/5

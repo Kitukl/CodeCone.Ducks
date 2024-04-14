@@ -1,60 +1,57 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using CodeCone.Ducks.Models;
+using CodeCone.Ducks.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CodeCone.Ducks.Data;
-using CodeCone.Ducks.Models;
 
 namespace CodeCone.Ducks.Controllers
 {
-    public class TicketsController : Controller
+    [Route("Tickets")]
+    public class TicketController : Controller
     {
         private readonly CodeConeDucksContext _context;
 
-        public TicketsController(CodeConeDucksContext context)
+        public TicketController(CodeConeDucksContext context)
         {
             _context = context;
         }
+        // GET: Ticket
 
-        // GET: Tickets
+        [HttpGet()]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Ticket.ToListAsync());
+            var tickets = await _context.Tickets.ToListAsync();
+            return View(tickets);
         }
 
-        // GET: Tickets/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet("Details/{id:guid}")]
+        // GET: Ticket/Details/5
+        public async Task<IActionResult> Details(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var ticket = await _context.Ticket
-                .FirstOrDefaultAsync(m => m.TicketId == id);
+            var ticket = await _context.Tickets
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (ticket == null)
             {
                 return NotFound();
             }
 
-            return View(ticket);
+            return Json(ticket);
         }
 
-        // GET: Tickets/Create
+        // GET: Ticket/Create
         public IActionResult Create()
         {
-            return View();
+            return Json(null);
         }
 
-        // POST: Tickets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+        // POST: Ticket/Create
+        [HttpPost(Name = "Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TicketId,Title,Description,Status,Priority,Type,Submitter,Assignee,CreatedAt,UpdatedAt")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("TicketId,Title,Description,CreatedAt,UserId")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
@@ -62,33 +59,28 @@ namespace CodeCone.Ducks.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(ticket);
+            return Json(ticket);
         }
 
-        // GET: Tickets/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Ticket/Edit/5
+        [HttpGet("Edit/{id:guid}")]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var ticket = await _context.Ticket.FindAsync(id);
+            var ticket = await _context.Tickets.FindAsync(id);
             if (ticket == null)
             {
                 return NotFound();
             }
-            return View(ticket);
+            return Json(ticket);
         }
 
-        // POST: Tickets/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Ticket/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TicketId,Title,Description,Status,Priority,Type,Submitter,Assignee,CreatedAt,UpdatedAt")] Ticket ticket)
+        public async Task<IActionResult> Edit(int id, [Bind("TicketId,Title,Description,Submitter,CreatedAt")] Ticket ticket)
         {
-            if (id != ticket.TicketId)
+            if (id != ticket.Id)
             {
                 return NotFound();
             }
@@ -102,7 +94,7 @@ namespace CodeCone.Ducks.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TicketExists(ticket.TicketId))
+                    if (!TicketExists(ticket.Id))
                     {
                         return NotFound();
                     }
@@ -113,55 +105,49 @@ namespace CodeCone.Ducks.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(ticket);
+            return Json(ticket);
         }
 
-        // GET: Tickets/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Ticket/Delete/5
+        [HttpDelete("Delete/{id:guid}")]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var ticket = await _context.Ticket
-                .FirstOrDefaultAsync(m => m.TicketId == id);
+            var ticket = await _context.Tickets
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (ticket == null)
             {
                 return NotFound();
             }
 
-            return View(ticket);
+            return Json(ticket);
         }
 
-        // POST: Tickets/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Ticket/Delete/5
+        [HttpDelete, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket != null)
-            {
-                _context.Ticket.Remove(ticket);
-            }
-
+            var ticket = await _context.Tickets.FindAsync(id);
+            _context.Tickets.Remove(ticket);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Ticket/GetTicketsByUser/username
+        public async Task<IActionResult> GetTicketsByUser(string username)
+        {
+            var tickets = await _context.Tickets
+                .Where(t => t.User.UserName == username)
+                .ToListAsync();
+
+            return Json(tickets);
+        }
+
+        [HttpGet("TicketExists/{id:guid}")]
         private bool TicketExists(int id)
         {
-            return _context.Ticket.Any(e => e.TicketId == id);
-        }
-        public async Task<IActionResult> Accept(int id)
-        {
-            var ticket = await _context.Ticket.FindAsync(id);
-            if (ticket != null)
-            {
-                _context.Ticket.Remove(ticket);
-                await _context.SaveChangesAsync();
-            }
-            return RedirectToAction(nameof(Index));
+            return _context.Tickets.Any(e => e.Id == id);
         }
     }
 }

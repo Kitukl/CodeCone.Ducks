@@ -17,15 +17,15 @@ namespace CodeCone.Ducks.Models
         public string UserName { get; set; }
 
         [Required]
-
         public int Age { get; set; }
 
         [Required]
-
         public string Password { get; set; }
 
         [Required]
-
         public bool isVolontier { get; set; }
+
+        public List<Ticket> Tickets { get; internal set; }
+        public List<Jar> Jars { get; internal set; }
     }
 }

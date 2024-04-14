@@ -14,8 +14,8 @@ namespace CodeCone.Ducks.Data
         {
         }
 
-        public DbSet<CodeCone.Ducks.Models.Ticket> Ticket { get; set; } = default!;
-        public DbSet<CodeCone.Ducks.Models.User> User { get; set; } = default!;
+        public DbSet<CodeCone.Ducks.Models.Ticket> Tickets { get; set; } = default!;
+        public DbSet<CodeCone.Ducks.Models.User> Users { get; set; } = default!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
             optionsBuilder.UseSqlServer("Server=localhost;Initial Catalog=CodeConeDucks;Integrated Security=True;Multiple Active Result Sets=True;Trust Server Certificate=True;Command Timeout=300");

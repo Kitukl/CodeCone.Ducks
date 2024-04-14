@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CodeCone.Ducks.Data;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CodeConeDucksContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CodeConeDucksContext") ?? throw new InvalidOperationException("Connection string 'CodeConeDucksContext' not found.")));
@@ -12,7 +13,11 @@ builder.Services.AddDbContext<CodeConeDucksContext>(options => options.UseSqlSer
     builder.Configuration.GetConnectionString("CodeConeDucksContext")
     ));
 
+builder.Services.AddCors(options => options.AddPolicy("default", new CorsPolicyBuilder().AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod().Build()));
+
 var app = builder.Build();
+
+app.UseCors("default");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
